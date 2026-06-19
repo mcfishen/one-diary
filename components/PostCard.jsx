@@ -57,7 +57,7 @@ export default function PostCard({ post }) {
         <Link href={`/user/${post.author_id}`} className="flex items-center gap-2 mb-2">
           <Avatar name={post.author_name} photoURL={post.author_photo} size={28} />
           <div>
-            <p className="text-[13px] font-black leading-tight" style={{ color: "var(--color-navy)" }}>
+            <p className="text-[13px] font-black leading-tight" style={{ color: "var(--color-title)" }}>
               {post.author_name}
             </p>
             <p className="text-[10px]" style={{ color: "var(--color-sub)" }}>

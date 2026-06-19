@@ -97,7 +97,7 @@ export default function ModerationPage() {
               <div className="flex items-center gap-2 mb-2">
                 <Avatar name={post.author_name} photoURL={post.author_photo} size={28} />
                 <div>
-                  <p className="text-[12px] font-black" style={{ color: "var(--color-navy)" }}>{post.author_name}</p>
+                  <p className="text-[12px] font-black" style={{ color: "var(--color-title)" }}>{post.author_name}</p>
                   <p className="text-[10px]" style={{ color: "var(--color-sub)" }}>{post.author_class}</p>
                 </div>
               </div>

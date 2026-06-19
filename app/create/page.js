@@ -76,7 +76,7 @@ export default function CreatePage() {
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
-        <h2 className="text-[20px] font-black tracking-tight" style={{ color: "var(--color-navy)" }}>
+        <h2 className="text-[20px] font-black tracking-tight" style={{ color: "var(--color-title)" }}>
           Запись отправлена!
         </h2>
         <p className="text-[13px]" style={{ color: "var(--color-sub)" }}>
@@ -104,7 +104,7 @@ export default function CreatePage() {
 
       <form onSubmit={handleSubmit} className="px-4 pt-4 flex flex-col gap-4">
         <div>
-          <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "var(--color-navy)" }}>Поездка</p>
+          <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "var(--color-title)" }}>Поездка</p>
           <div className="flex flex-col gap-2">
             {trips.length === 0 && (
               <p className="text-[12px]" style={{ color: "var(--color-sub)" }}>
@@ -122,7 +122,7 @@ export default function CreatePage() {
                 <span className="w-2 h-2 rounded-full flex-shrink-0"
                       style={{ background: tripId === t.id ? "var(--color-orange)" : "var(--color-hr)" }} />
                 <div>
-                  <p className="text-[12px] font-black" style={{ color: "var(--color-navy)" }}>{t.name}</p>
+                  <p className="text-[12px] font-black" style={{ color: "var(--color-title)" }}>{t.name}</p>
                   <p className="text-[10px]" style={{ color: "var(--color-sub)" }}>{t.date}</p>
                 </div>
               </button>
@@ -131,7 +131,7 @@ export default function CreatePage() {
         </div>
 
         <div>
-          <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "var(--color-navy)" }}>Впечатления</p>
+          <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "var(--color-title)" }}>Впечатления</p>
           <textarea value={text} onChange={(e) => setText(e.target.value)} rows={5} required
                     placeholder="Что тебе понравилось? Что удивило? Что запомнится навсегда?"
                     className="w-full rounded-[12px] px-3.5 py-3 text-[13px] leading-relaxed outline-none resize-none"
@@ -139,7 +139,7 @@ export default function CreatePage() {
         </div>
 
         <div>
-          <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "var(--color-navy)" }}>Настроение</p>
+          <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "var(--color-title)" }}>Настроение</p>
           <div className="flex flex-wrap gap-2">
             {MOODS.map((m) => (
               <button key={m} type="button" onClick={() => setMood(m === mood ? "" : m)}
@@ -156,7 +156,7 @@ export default function CreatePage() {
         </div>
 
         <div>
-          <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "var(--color-navy)" }}>Фото и видео</p>
+          <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "var(--color-title)" }}>Фото и видео</p>
           <button type="button" onClick={() => fileRef.current.click()}
                   className="w-full rounded-[12px] py-5 flex flex-col items-center gap-2"
                   style={{ border: "1.5px dashed var(--color-orange)", background: "rgba(237,118,21,0.04)" }}>

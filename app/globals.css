@@ -14,6 +14,8 @@
   --color-sl:       #EEF1F5;
   --color-wh:       #FAFBFC;
   --color-card:     #ffffff;
+  --color-title:    #132245;
+  --color-label:    #1f3a6e;
 
   --shadow-card: 0 8px 32px rgba(19,34,69,0.09);
   --shadow-sm:   0 2px 12px rgba(19,34,69,0.07);
@@ -51,6 +53,8 @@ html[data-theme="dark"] {
   --color-sub:     #8A9EBD;
   --color-mint:    #1E4038;
   --color-mint-200:#163330;
+  --color-title:   #E8EEF8;
+  --color-label:   #8A9EBD;
   --shadow-card:   0 8px 32px rgba(0,0,0,0.45);
   --shadow-sm:     0 2px 12px rgba(0,0,0,0.35);
   --shadow-nav:    0 -4px 24px rgba(0,0,0,0.55);
@@ -58,4 +62,9 @@ html[data-theme="dark"] {
 
 input, textarea, select, button {
   font-family: var(--font-sans);
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: rgba(138,158,189,0.5);
 }

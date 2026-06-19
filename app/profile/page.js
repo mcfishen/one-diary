@@ -7,6 +7,7 @@ import { getUser, getUserPosts, updateProfile } from "@/lib/db";
 import { uploadAvatar } from "@/lib/storage";
 import { useRef } from "react";
 import { useTheme } from "@/components/ThemeProvider";
+import Achievements from "@/components/Achievements";
 import BottomNav from "@/components/BottomNav";
 import Avatar from "@/components/Avatar";
 import Link from "next/link";
@@ -146,8 +147,8 @@ export default function ProfilePage() {
       {tab === 1 && (
         <div className="px-4 py-5 flex flex-col gap-3">
           <div className="rounded-[12px] p-4" style={{ background: "var(--color-mint)" }}>
-            <p className="text-[10px] font-black tracking-widest uppercase mb-1" style={{ color: "var(--color-navy-700)" }}>Класс</p>
-            <p className="text-[15px] font-black" style={{ color: "var(--color-navy)" }}>
+            <p className="text-[10px] font-black tracking-widest uppercase mb-1" style={{ color: "var(--color-label)" }}>Класс</p>
+            <p className="text-[15px] font-black" style={{ color: "var(--color-title)" }}>
               {profile?.class || "—"}
             </p>
           </div>
@@ -155,6 +156,8 @@ export default function ProfilePage() {
             <p className="text-[10px] font-black tracking-widest uppercase mb-1" style={{ color: "var(--color-sub)" }}>Email</p>
             <p className="text-[13px]" style={{ color: "var(--color-ink)" }}>{user?.email || "—"}</p>
           </div>
+
+          <Achievements posts={posts} />
           {/* Dark mode toggle */}
           <button onClick={toggleTheme}
                   className="w-full rounded-[12px] p-4 flex items-center justify-between"

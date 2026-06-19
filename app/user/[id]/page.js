@@ -6,6 +6,7 @@ import Avatar from "@/components/Avatar";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
 import { useUser } from "@/components/AuthProvider";
+import Achievements from "@/components/Achievements";
 
 export default function UserProfilePage({ params }) {
   const { id } = use(params);
@@ -14,6 +15,7 @@ export default function UserProfilePage({ params }) {
   const [profile, setProfile] = useState(null);
   const [posts, setPosts] = useState([]);
   const [myProfile, setMyProfile] = useState(null);
+  const [tab, setTab] = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -39,18 +41,16 @@ export default function UserProfilePage({ params }) {
 
   return (
     <div className="min-h-screen pb-28" style={{ background: "var(--color-wh)" }}>
-      {/* Back */}
       <div className="px-4 pt-4 pb-2">
         <button onClick={() => router.back()}
                 className="w-8 h-8 rounded-full flex items-center justify-center"
-                style={{ background: "var(--color-sl)", color: "var(--color-navy)" }}>
+                style={{ background: "var(--color-sl)", color: "var(--color-ink)" }}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
       </div>
 
-      {/* Hero */}
       <div className="flex flex-col items-center text-center pb-5 px-4"
            style={{ background: "var(--color-navy)" }}>
         <Avatar name={profile.display_name || ""} photoURL={profile.photo_url} size={64} className="mb-3"
@@ -80,35 +80,55 @@ export default function UserProfilePage({ params }) {
         )}
       </div>
 
-      {/* Posts grid */}
-      <div className="grid grid-cols-2 gap-[3px] p-[3px] mt-1">
-        {posts.map((post) => (
-          <Link key={post.id} href={`/post/${post.id}`}
-                className="relative aspect-square rounded-[10px] overflow-hidden"
-                style={{ background: "var(--color-sl)" }}>
-            {post.media_urls?.[0] ? (
-              <img src={post.media_urls[0]} alt="" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center p-3">
-                <p className="text-[10px] font-black text-center line-clamp-4" style={{ color: "var(--color-sub)" }}>
-                  {post.text}
-                </p>
-              </div>
-            )}
-            {post.trip_name && (
-              <div className="absolute bottom-0 left-0 right-0 px-2 py-1.5"
-                   style={{ background: "rgba(19,34,69,0.55)" }}>
-                <p className="text-[9px] font-black text-white truncate">{post.trip_name}</p>
-              </div>
-            )}
-          </Link>
+      <div className="flex" style={{ borderBottom: "1px solid var(--color-hr)" }}>
+        {["Записи", "Достижения"].map((t, i) => (
+          <button key={t} onClick={() => setTab(i)}
+                  className="flex-1 py-3 text-[11px] font-black tracking-wide transition-colors"
+                  style={{
+                    color: tab === i ? "var(--color-orange)" : "var(--color-sub)",
+                    borderBottom: `2.5px solid ${tab === i ? "var(--color-orange)" : "transparent"}`,
+                  }}>
+            {t}
+          </button>
         ))}
-        {posts.length === 0 && (
-          <div className="col-span-2 py-16 flex flex-col items-center gap-2">
-            <p className="text-[13px] font-black" style={{ color: "var(--color-sub)" }}>Записей пока нет</p>
-          </div>
-        )}
       </div>
+
+      {tab === 0 && (
+        <div className="grid grid-cols-2 gap-[3px] p-[3px] mt-1">
+          {posts.map((post) => (
+            <Link key={post.id} href={`/post/${post.id}`}
+                  className="relative aspect-square rounded-[10px] overflow-hidden"
+                  style={{ background: "var(--color-sl)" }}>
+              {post.media_urls?.[0] ? (
+                <img src={post.media_urls[0]} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center p-3">
+                  <p className="text-[10px] font-black text-center line-clamp-4" style={{ color: "var(--color-sub)" }}>
+                    {post.text}
+                  </p>
+                </div>
+              )}
+              {post.trip_name && (
+                <div className="absolute bottom-0 left-0 right-0 px-2 py-1.5"
+                     style={{ background: "rgba(19,34,69,0.55)" }}>
+                  <p className="text-[9px] font-black text-white truncate">{post.trip_name}</p>
+                </div>
+              )}
+            </Link>
+          ))}
+          {posts.length === 0 && (
+            <div className="col-span-2 py-16 flex flex-col items-center gap-2">
+              <p className="text-[13px] font-black" style={{ color: "var(--color-sub)" }}>Записей пока нет</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {tab === 1 && (
+        <div className="px-4 py-5">
+          <Achievements posts={posts} />
+        </div>
+      )}
 
       <BottomNav isTeacher={myProfile?.role === "teacher"} />
     </div>

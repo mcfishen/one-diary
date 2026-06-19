@@ -98,7 +98,7 @@ export default function PostPage({ params }) {
         <div className="flex items-center gap-2.5 mb-4">
           <Avatar name={post.author_name} photoURL={post.author_photo} size={32} />
           <div>
-            <p className="text-[13px] font-black leading-tight" style={{ color: "var(--color-navy)" }}>
+            <p className="text-[13px] font-black leading-tight" style={{ color: "var(--color-title)" }}>
               {post.author_name}
             </p>
             <p className="text-[10px]" style={{ color: "var(--color-sub)" }}>
@@ -135,7 +135,7 @@ export default function PostPage({ params }) {
         </div>
 
         <div style={{ borderTop: "1px solid var(--color-hr)" }} className="pt-4">
-          <p className="text-[10px] font-black tracking-widest uppercase mb-3" style={{ color: "var(--color-navy)" }}>
+          <p className="text-[10px] font-black tracking-widest uppercase mb-3" style={{ color: "var(--color-title)" }}>
             Комментарии
           </p>
 
@@ -144,7 +144,7 @@ export default function PostPage({ params }) {
               <Avatar name={c.author_name || ""} size={26} />
               <div className="rounded-[10px] rounded-tl-none px-3 py-2 flex-1 text-[12px] leading-relaxed"
                    style={{ background: "var(--color-sl)", color: "var(--color-ink)" }}>
-                <span className="font-black" style={{ color: "var(--color-navy)" }}>{c.author_name} </span>
+                <span className="font-black" style={{ color: "var(--color-title)" }}>{c.author_name} </span>
                 {c.text}
               </div>
             </div>
