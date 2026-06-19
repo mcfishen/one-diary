@@ -54,7 +54,7 @@ export default function PostCard({ post }) {
           </p>
         )}
 
-        <div className="flex items-center gap-2 mb-2">
+        <Link href={`/user/${post.author_id}`} className="flex items-center gap-2 mb-2">
           <Avatar name={post.author_name} photoURL={post.author_photo} size={28} />
           <div>
             <p className="text-[13px] font-black leading-tight" style={{ color: "var(--color-navy)" }}>
@@ -64,7 +64,7 @@ export default function PostCard({ post }) {
               {post.author_class} · {formatDate(post.created_at)}
             </p>
           </div>
-        </div>
+        </Link>
 
         <p className="text-[13px] leading-relaxed mb-2.5 line-clamp-3" style={{ color: "var(--color-ink)" }}>
           {post.text}
