@@ -50,6 +50,7 @@ export default function ProfilePage() {
   }
 
   const totalReactions = posts.reduce((s, p) => s + (p.heart_count || 0) + (p.star_count || 0), 0);
+  const uniqueTrips = new Set(posts.map((p) => p.trip_id).filter(Boolean)).size;
 
   return (
     <div className="min-h-screen pb-28" style={{ background: "var(--color-wh)" }}>
@@ -85,7 +86,7 @@ export default function ProfilePage() {
         <div className="flex gap-3 mt-4 w-full">
           {[
             { n: posts.length, l: "Записей" },
-            { n: profile?.trips_count || 0, l: "Поездки" },
+            { n: uniqueTrips, l: "Поездки" },
             { n: totalReactions, l: "Реакции" },
           ].map(({ n, l }) => (
             <div key={l} className="flex-1 rounded-[10px] py-2.5 text-center"
