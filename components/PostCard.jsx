@@ -4,6 +4,7 @@ import Avatar from "./Avatar";
 import { addReaction } from "@/lib/db";
 import { useUser } from "./AuthProvider";
 import { useState } from "react";
+import Lightbox from "./Lightbox";
 
 function formatDate(ts) {
   if (!ts) return "";
@@ -16,6 +17,7 @@ export default function PostCard({ post }) {
   const [stars, setStars] = useState(post.star_count || 0);
   const [liked, setLiked] = useState(false);
   const [starred, setStarred] = useState(false);
+  const [lightbox, setLightbox] = useState(null);
 
   async function handleReact(type, isActive, setActive, setCount) {
     if (!user) return;
@@ -27,22 +29,22 @@ export default function PostCard({ post }) {
 
   return (
     <article className="bg-white rounded-[20px] mb-3 overflow-hidden" style={{ boxShadow: "var(--shadow-sm)" }}>
+      {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}
       {post.media_urls?.[0] && (
-        <Link href={`/post/${post.id}`}>
-          <div className="relative h-36 overflow-hidden">
-            {post.media_urls[0].includes("video") ? (
-              <video src={post.media_urls[0]} className="w-full h-full object-cover" muted />
-            ) : (
-              <img src={post.media_urls[0]} alt="" className="w-full h-full object-cover" />
-            )}
-            {post.trip_name && (
-              <span className="absolute top-2.5 left-2.5 text-white text-[10px] font-black rounded-full px-2.5 py-1"
-                    style={{ background: "rgba(19,34,69,0.8)" }}>
-                {post.trip_name}
-              </span>
-            )}
-          </div>
-        </Link>
+        <div className="relative h-36 overflow-hidden cursor-zoom-in"
+             onClick={() => !post.media_urls[0].includes("video") && setLightbox(post.media_urls[0])}>
+          {post.media_urls[0].includes("video") ? (
+            <video src={post.media_urls[0]} className="w-full h-full object-cover" muted controls />
+          ) : (
+            <img src={post.media_urls[0]} alt="" className="w-full h-full object-cover" />
+          )}
+          {post.trip_name && (
+            <span className="absolute top-2.5 left-2.5 text-white text-[10px] font-black rounded-full px-2.5 py-1"
+                  style={{ background: "rgba(19,34,69,0.8)" }}>
+              {post.trip_name}
+            </span>
+          )}
+        </div>
       )}
 
       <div className="px-3.5 py-3">

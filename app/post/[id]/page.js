@@ -5,6 +5,7 @@ import { useUser } from "@/components/AuthProvider";
 import { getPost, addReaction, addComment, getUser } from "@/lib/db";
 import Avatar from "@/components/Avatar";
 import Link from "next/link";
+import Lightbox from "@/components/Lightbox";
 
 function formatDate(ts) {
   if (!ts) return "";
@@ -22,6 +23,7 @@ export default function PostPage({ params }) {
   const [starred, setStarred] = useState(false);
   const [hearts, setHearts] = useState(0);
   const [stars, setStars] = useState(0);
+  const [lightbox, setLightbox] = useState(null);
 
   useEffect(() => {
     if (!id) return;
@@ -80,8 +82,10 @@ export default function PostPage({ params }) {
         </p>
       </div>
 
+      {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}
       {post.media_urls?.[0] && (
-        <div className="w-full h-52 overflow-hidden">
+        <div className="w-full h-52 overflow-hidden cursor-zoom-in"
+             onClick={() => setLightbox(post.media_urls[0])}>
           <img src={post.media_urls[0]} alt="" className="w-full h-full object-cover" />
         </div>
       )}

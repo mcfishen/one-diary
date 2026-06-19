@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useUser } from "@/components/AuthProvider";
-import { getUser, getUserPosts } from "@/lib/db";
+import { getUser, getUserPosts, updateProfile } from "@/lib/db";
+import { uploadAvatar } from "@/lib/storage";
+import { useRef } from "react";
 import BottomNav from "@/components/BottomNav";
 import Avatar from "@/components/Avatar";
 import Link from "next/link";
@@ -14,6 +16,8 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState(null);
   const [posts, setPosts] = useState([]);
   const [tab, setTab] = useState(0);
+  const [avatarLoading, setAvatarLoading] = useState(false);
+  const avatarRef = useRef();
 
   useEffect(() => {
     if (user === undefined) return;
@@ -21,6 +25,21 @@ export default function ProfilePage() {
     getUser(user.id).then(setProfile);
     getUserPosts(user.id).then(setPosts);
   }, [user, router]);
+
+  async function handleAvatarChange(e) {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    setAvatarLoading(true);
+    try {
+      const url = await uploadAvatar(file, user.id);
+      await updateProfile(user.id, { photo_url: url });
+      setProfile((p) => ({ ...p, photo_url: url }));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setAvatarLoading(false);
+    }
+  }
 
   async function logout() {
     await supabase.auth.signOut();
@@ -33,13 +52,27 @@ export default function ProfilePage() {
     <div className="min-h-screen pb-28" style={{ background: "var(--color-wh)" }}>
       <div className="flex flex-col items-center text-center pb-5 pt-6 px-4"
            style={{ background: "var(--color-navy)" }}>
-        <Avatar
-          name={profile?.display_name || ""}
-          photoURL={profile?.photo_url}
-          size={64}
-          className="mb-3"
-          style={{ border: "3px solid var(--color-orange)" }}
-        />
+        <div className="relative mb-3 cursor-pointer" onClick={() => avatarRef.current?.click()}>
+          <Avatar
+            name={profile?.display_name || ""}
+            photoURL={profile?.photo_url}
+            size={64}
+            style={{ border: "3px solid var(--color-orange)" }}
+          />
+          <div className="absolute bottom-0 right-0 w-5 h-5 rounded-full flex items-center justify-center"
+               style={{ background: "var(--color-orange)" }}>
+            {avatarLoading ? (
+              <div className="w-2.5 h-2.5 border border-white rounded-full animate-spin"
+                   style={{ borderTopColor: "transparent" }} />
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5} className="w-2.5 h-2.5">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                <circle cx="12" cy="13" r="4" />
+              </svg>
+            )}
+          </div>
+          <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+        </div>
         <h1 className="text-[18px] font-black text-white tracking-tight leading-tight">
           {profile?.display_name || "..."}
         </h1>
