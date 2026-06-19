@@ -41,14 +41,26 @@ export default function PostPage({ params }) {
   }, [id]);
 
   useEffect(() => {
+    if (!user || !id) return;
+    const saved = JSON.parse(localStorage.getItem(`rxn_${user.id}_${id}`) || "{}");
+    if (saved.heart) setLiked(true);
+    if (saved.star) setStarred(true);
+  }, [user?.id, id]);
+
+  useEffect(() => {
     if (user) getUser(user.id).then(setProfile);
   }, [user]);
 
   async function handleReact(type, isActive, setActive, setCount) {
     if (!user) return;
-    const delta = isActive ? -1 : 1;
-    setActive(!isActive);
+    const next = !isActive;
+    const delta = next ? 1 : -1;
+    setActive(next);
     setCount((n) => Math.max(0, n + delta));
+    const key = `rxn_${user.id}_${id}`;
+    const saved = JSON.parse(localStorage.getItem(key) || "{}");
+    saved[type] = next;
+    localStorage.setItem(key, JSON.stringify(saved));
     await addReaction(id, type, delta);
   }
 

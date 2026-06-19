@@ -17,6 +17,13 @@ export default function PostCard({ post }) {
   const [stars, setStars] = useState(post.star_count || 0);
   const [liked, setLiked] = useState(false);
   const [starred, setStarred] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    const saved = JSON.parse(localStorage.getItem(`rxn_${user.id}_${post.id}`) || "{}");
+    if (saved.heart) setLiked(true);
+    if (saved.star) setStarred(true);
+  }, [user?.id, post.id]);
   const [lightbox, setLightbox] = useState(null);
   const [confirming, setConfirming] = useState(false);
   const [deleted, setDeleted] = useState(false);
@@ -28,9 +35,14 @@ export default function PostCard({ post }) {
 
   async function handleReact(type, isActive, setActive, setCount) {
     if (!user) return;
-    const delta = isActive ? -1 : 1;
-    setActive(!isActive);
+    const next = !isActive;
+    const delta = next ? 1 : -1;
+    setActive(next);
     setCount((n) => Math.max(0, n + delta));
+    const key = `rxn_${user.id}_${post.id}`;
+    const saved = JSON.parse(localStorage.getItem(key) || "{}");
+    saved[type] = next;
+    localStorage.setItem(key, JSON.stringify(saved));
     await addReaction(post.id, type, delta);
   }
 
