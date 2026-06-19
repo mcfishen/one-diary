@@ -3,7 +3,7 @@ import Link from "next/link";
 import Avatar from "./Avatar";
 import { addReaction, deletePost } from "@/lib/db";
 import { useUser } from "./AuthProvider";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Lightbox from "./Lightbox";
 
 function formatDate(ts) {
