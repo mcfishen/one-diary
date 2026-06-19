@@ -2,7 +2,7 @@
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/components/AuthProvider";
-import { getPost, addReaction, addComment, getUser } from "@/lib/db";
+import { getPost, addReaction, addComment, getUser, deletePost } from "@/lib/db";
 import Avatar from "@/components/Avatar";
 import Link from "next/link";
 import Lightbox from "@/components/Lightbox";
@@ -24,6 +24,12 @@ export default function PostPage({ params }) {
   const [hearts, setHearts] = useState(0);
   const [stars, setStars] = useState(0);
   const [lightbox, setLightbox] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  async function handleDelete() {
+    await deletePost(id);
+    router.replace("/feed");
+  }
 
   useEffect(() => {
     if (!id) return;
@@ -71,15 +77,42 @@ export default function PostPage({ params }) {
     <div className="min-h-screen" style={{ background: "var(--color-wh)" }}>
       <div className="px-4 pt-4 pb-2 flex items-center gap-2">
         <button onClick={() => router.back()} aria-label="Назад"
-                className="w-8 h-8 rounded-full flex items-center justify-center"
-                style={{ background: "var(--color-sl)", color: "var(--color-navy)" }}>
+                className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                style={{ background: "var(--color-sl)", color: "var(--color-ink)" }}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
-        <p className="text-[11px] font-black tracking-wide" style={{ color: "var(--color-sub)" }}>
+        <p className="text-[11px] font-black tracking-wide flex-1" style={{ color: "var(--color-sub)" }}>
           {post.trip_name}
         </p>
+        {user?.id === post.author_id && (
+          confirmDelete ? (
+            <div className="flex items-center gap-2">
+              <button onClick={handleDelete}
+                      className="text-[11px] font-black rounded-full px-3 py-1.5"
+                      style={{ background: "rgba(198,40,40,0.1)", color: "#c62828" }}>
+                Удалить
+              </button>
+              <button onClick={() => setConfirmDelete(false)}
+                      className="text-[11px] font-black rounded-full px-3 py-1.5"
+                      style={{ background: "var(--color-sl)", color: "var(--color-sub)" }}>
+                Отмена
+              </button>
+            </div>
+          ) : (
+            <button onClick={() => setConfirmDelete(true)}
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
+                    style={{ background: "var(--color-sl)", color: "var(--color-sub)" }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-1 14H6L5 6" />
+                <path d="M10 11v6M14 11v6" />
+                <path d="M9 6V4h6v2" />
+              </svg>
+            </button>
+          )
+        )}
       </div>
 
       {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}

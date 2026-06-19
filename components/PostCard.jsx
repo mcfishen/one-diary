@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Avatar from "./Avatar";
-import { addReaction } from "@/lib/db";
+import { addReaction, deletePost } from "@/lib/db";
 import { useUser } from "./AuthProvider";
 import { useState } from "react";
 import Lightbox from "./Lightbox";
@@ -18,6 +18,13 @@ export default function PostCard({ post }) {
   const [liked, setLiked] = useState(false);
   const [starred, setStarred] = useState(false);
   const [lightbox, setLightbox] = useState(null);
+  const [confirming, setConfirming] = useState(false);
+  const [deleted, setDeleted] = useState(false);
+
+  async function handleDelete() {
+    await deletePost(post.id);
+    setDeleted(true);
+  }
 
   async function handleReact(type, isActive, setActive, setCount) {
     if (!user) return;
@@ -26,6 +33,10 @@ export default function PostCard({ post }) {
     setCount((n) => Math.max(0, n + delta));
     await addReaction(post.id, type, delta);
   }
+
+  if (deleted) return null;
+
+  const isOwner = user?.id === post.author_id;
 
   return (
     <article className="rounded-[20px] mb-3 overflow-hidden" style={{ background: "var(--color-card)", boxShadow: "var(--shadow-sm)" }}>
@@ -54,7 +65,8 @@ export default function PostCard({ post }) {
           </p>
         )}
 
-        <Link href={`/user/${post.author_id}`} className="flex items-center gap-2 mb-2">
+        <div className="flex items-center justify-between mb-2">
+        <Link href={`/user/${post.author_id}`} className="flex items-center gap-2 flex-1 min-w-0">
           <Avatar name={post.author_name} photoURL={post.author_photo} size={28} />
           <div>
             <p className="text-[13px] font-black leading-tight" style={{ color: "var(--color-title)" }}>
@@ -65,6 +77,34 @@ export default function PostCard({ post }) {
             </p>
           </div>
         </Link>
+        {isOwner && (
+          confirming ? (
+            <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
+              <button onClick={handleDelete}
+                      className="text-[10px] font-black rounded-full px-2.5 py-1"
+                      style={{ background: "rgba(198,40,40,0.1)", color: "#c62828" }}>
+                Удалить
+              </button>
+              <button onClick={() => setConfirming(false)}
+                      className="text-[10px] font-black rounded-full px-2.5 py-1"
+                      style={{ background: "var(--color-sl)", color: "var(--color-sub)" }}>
+                Отмена
+              </button>
+            </div>
+          ) : (
+            <button onClick={() => setConfirming(true)}
+                    className="flex-shrink-0 ml-2 w-6 h-6 rounded-full flex items-center justify-center"
+                    style={{ color: "var(--color-sub)" }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3.5 h-3.5">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-1 14H6L5 6" />
+                <path d="M10 11v6M14 11v6" />
+                <path d="M9 6V4h6v2" />
+              </svg>
+            </button>
+          )
+        )}
+        </div>
 
         <p className="text-[13px] leading-relaxed mb-2.5 line-clamp-3" style={{ color: "var(--color-ink)" }}>
           {post.text}
