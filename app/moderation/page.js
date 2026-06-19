@@ -8,9 +8,8 @@ import BottomNav from "@/components/BottomNav";
 
 function formatDate(ts) {
   if (!ts) return "";
-  const d = ts.toDate ? ts.toDate() : new Date(ts);
-  return d.toLocaleDateString("ru-RU", { day: "numeric", month: "short" }) +
-    " · " + d.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+  return new Date(ts).toLocaleDateString("ru-RU", { day: "numeric", month: "short" }) +
+    " · " + new Date(ts).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
 }
 
 export default function ModerationPage() {
@@ -24,7 +23,7 @@ export default function ModerationPage() {
   useEffect(() => {
     if (user === undefined) return;
     if (!user) { router.replace("/login"); return; }
-    getUser(user.uid).then((p) => {
+    getUser(user.id).then((p) => {
       if (p?.role !== "teacher") { router.replace("/feed"); return; }
       setProfile(p);
     });
@@ -47,25 +46,22 @@ export default function ModerationPage() {
 
   return (
     <div className="min-h-screen pb-28" style={{ background: "var(--color-wh)" }}>
-      {/* Header */}
-      <div className="px-4 pt-5 pb-4 flex items-center justify-between"
-           style={{ background: "var(--color-navy)" }}>
+      <div className="px-4 pt-5 pb-4 flex items-center justify-between" style={{ background: "var(--color-navy)" }}>
         <div>
-          <p className="text-[10px] font-black tracking-widest uppercase mb-1"
-             style={{ color: "rgba(255,255,255,0.4)" }}>Панель учителя</p>
+          <p className="text-[10px] font-black tracking-widest uppercase mb-1" style={{ color: "rgba(255,255,255,0.4)" }}>
+            Панель учителя
+          </p>
           <h1 className="text-[18px] font-black text-white tracking-tight">Проверка записей</h1>
         </div>
         {posts.filter((p) => p.status === "pending").length > 0 && (
-          <span className="text-white text-[11px] font-black rounded-full px-3 py-1.5"
-                style={{ background: "var(--color-orange)" }}>
+          <span className="text-white text-[11px] font-black rounded-full px-3 py-1.5" style={{ background: "var(--color-orange)" }}>
             {posts.filter((p) => p.status === "pending").length} ожидает
           </span>
         )}
       </div>
 
-      {/* Tabs */}
       <div className="flex" style={{ borderBottom: "1px solid var(--color-hr)" }}>
-        {[{ key: "pending", label: `На проверке (${posts.filter(p=>p.status==="pending").length})` },
+        {[{ key: "pending", label: `На проверке (${posts.filter(p => p.status === "pending").length})` },
           { key: "published", label: "Опубликовано" }].map(({ key, label }) => (
           <button key={key} onClick={() => setTab(key)}
                   className="flex-1 py-3 text-[11px] font-black tracking-wide transition-colors"
@@ -88,25 +84,21 @@ export default function ModerationPage() {
         )}
 
         {filtered.map((post) => (
-          <article key={post.id} className="bg-white rounded-[20px] mb-3 overflow-hidden"
-                   style={{ boxShadow: "var(--shadow-sm)" }}>
+          <article key={post.id} className="bg-white rounded-[20px] mb-3 overflow-hidden" style={{ boxShadow: "var(--shadow-sm)" }}>
             <div className="px-3.5 pt-3 pb-2">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-black tracking-wide uppercase"
-                      style={{ color: "var(--color-orange)" }}>
-                  {post.tripName}
+                <span className="text-[10px] font-black tracking-wide uppercase" style={{ color: "var(--color-orange)" }}>
+                  {post.trip_name}
                 </span>
                 <span className="text-[10px]" style={{ color: "var(--color-sub)" }}>
-                  {formatDate(post.createdAt)}
+                  {formatDate(post.created_at)}
                 </span>
               </div>
               <div className="flex items-center gap-2 mb-2">
-                <Avatar name={post.authorName} photoURL={post.authorPhoto} size={28} />
+                <Avatar name={post.author_name} photoURL={post.author_photo} size={28} />
                 <div>
-                  <p className="text-[12px] font-black" style={{ color: "var(--color-navy)" }}>
-                    {post.authorName}
-                  </p>
-                  <p className="text-[10px]" style={{ color: "var(--color-sub)" }}>{post.authorClass}</p>
+                  <p className="text-[12px] font-black" style={{ color: "var(--color-navy)" }}>{post.author_name}</p>
+                  <p className="text-[10px]" style={{ color: "var(--color-sub)" }}>{post.author_class}</p>
                 </div>
               </div>
               <p className="text-[12px] leading-relaxed line-clamp-3" style={{ color: "var(--color-ink)" }}>
@@ -116,20 +108,14 @@ export default function ModerationPage() {
 
             {post.status === "pending" && (
               <div className="flex gap-2 px-3.5 py-2.5" style={{ borderTop: "1px solid var(--color-hr)" }}>
-                <button
-                  onClick={() => handleAction(post.id, "published")}
-                  disabled={processing[post.id]}
-                  className="flex-1 rounded-full py-2 text-[12px] font-black transition-opacity disabled:opacity-50"
-                  style={{ background: "rgba(46,125,50,0.1)", color: "#2E7D32" }}
-                >
+                <button onClick={() => handleAction(post.id, "published")} disabled={processing[post.id]}
+                        className="flex-1 rounded-full py-2 text-[12px] font-black transition-opacity disabled:opacity-50"
+                        style={{ background: "rgba(46,125,50,0.1)", color: "#2E7D32" }}>
                   Опубликовать
                 </button>
-                <button
-                  onClick={() => handleAction(post.id, "rejected")}
-                  disabled={processing[post.id]}
-                  className="flex-1 rounded-full py-2 text-[12px] font-black transition-opacity disabled:opacity-50"
-                  style={{ background: "rgba(198,40,40,0.08)", color: "#c62828" }}
-                >
+                <button onClick={() => handleAction(post.id, "rejected")} disabled={processing[post.id]}
+                        className="flex-1 rounded-full py-2 text-[12px] font-black transition-opacity disabled:opacity-50"
+                        style={{ background: "rgba(198,40,40,0.08)", color: "#c62828" }}>
                   Отклонить
                 </button>
               </div>
