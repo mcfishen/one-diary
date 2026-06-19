@@ -6,6 +6,7 @@ import { useUser } from "@/components/AuthProvider";
 import { getUser, getUserPosts, updateProfile } from "@/lib/db";
 import { uploadAvatar } from "@/lib/storage";
 import { useRef } from "react";
+import { useTheme } from "@/components/ThemeProvider";
 import BottomNav from "@/components/BottomNav";
 import Avatar from "@/components/Avatar";
 import Link from "next/link";
@@ -18,6 +19,7 @@ export default function ProfilePage() {
   const [tab, setTab] = useState(0);
   const [avatarLoading, setAvatarLoading] = useState(false);
   const avatarRef = useRef();
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     if (user === undefined) return;
@@ -153,8 +155,41 @@ export default function ProfilePage() {
             <p className="text-[10px] font-black tracking-widest uppercase mb-1" style={{ color: "var(--color-sub)" }}>Email</p>
             <p className="text-[13px]" style={{ color: "var(--color-ink)" }}>{user?.email || "—"}</p>
           </div>
+          {/* Dark mode toggle */}
+          <button onClick={toggleTheme}
+                  className="w-full rounded-[12px] p-4 flex items-center justify-between"
+                  style={{ background: "var(--color-sl)" }}>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center"
+                   style={{ background: "var(--color-card)" }}>
+                {theme === "dark" ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-orange)" strokeWidth={2} className="w-4 h-4">
+                    <circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-navy)" strokeWidth={2} className="w-4 h-4">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                  </svg>
+                )}
+              </div>
+              <div>
+                <p className="text-[13px] font-black text-left" style={{ color: "var(--color-ink)" }}>
+                  {theme === "dark" ? "Светлая тема" : "Тёмная тема"}
+                </p>
+                <p className="text-[10px]" style={{ color: "var(--color-sub)" }}>
+                  {theme === "dark" ? "Сейчас: тёмная" : "Сейчас: светлая"}
+                </p>
+              </div>
+            </div>
+            <div className="w-10 h-6 rounded-full flex items-center px-0.5 transition-colors"
+                 style={{ background: theme === "dark" ? "var(--color-orange)" : "var(--color-hr)" }}>
+              <div className="w-5 h-5 rounded-full bg-white shadow transition-transform"
+                   style={{ transform: theme === "dark" ? "translateX(16px)" : "translateX(0)" }} />
+            </div>
+          </button>
+
           <button onClick={logout}
-                  className="w-full rounded-full py-3 text-[13px] font-black mt-2"
+                  className="w-full rounded-full py-3 text-[13px] font-black mt-1"
                   style={{ border: "1.5px solid var(--color-hr)", color: "var(--color-sub)" }}>
             Выйти из аккаунта
           </button>

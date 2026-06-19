@@ -115,7 +115,7 @@ export default function CreatePage() {
               <button key={t.id} type="button" onClick={() => setTripId(t.id)}
                       className="flex items-center gap-3 rounded-[12px] px-3.5 py-2.5 text-left transition-colors"
                       style={{
-                        background: tripId === t.id ? "rgba(237,118,21,0.06)" : "#fff",
+                        background: tripId === t.id ? "rgba(237,118,21,0.06)" : "var(--color-card)",
                         border: `1.5px solid ${tripId === t.id ? "var(--color-orange)" : "var(--color-hr)"}`,
                         boxShadow: "var(--shadow-sm)",
                       }}>
@@ -135,7 +135,7 @@ export default function CreatePage() {
           <textarea value={text} onChange={(e) => setText(e.target.value)} rows={5} required
                     placeholder="Что тебе понравилось? Что удивило? Что запомнится навсегда?"
                     className="w-full rounded-[12px] px-3.5 py-3 text-[13px] leading-relaxed outline-none resize-none"
-                    style={{ border: "1.5px solid var(--color-hr)", background: "#fff", color: "var(--color-ink)" }} />
+                    style={{ border: "1.5px solid var(--color-hr)", background: "var(--color-card)", color: "var(--color-ink)" }} />
         </div>
 
         <div>
@@ -146,7 +146,7 @@ export default function CreatePage() {
                       className="text-[11px] font-black rounded-full px-3 py-1.5 transition-colors"
                       style={{
                         border: `1.5px solid ${mood === m ? "var(--color-orange)" : "var(--color-hr)"}`,
-                        background: mood === m ? "rgba(237,118,21,0.08)" : "#fff",
+                        background: mood === m ? "rgba(237,118,21,0.08)" : "var(--color-card)",
                         color: mood === m ? "var(--color-orange)" : "var(--color-sub)",
                       }}>
                 {m}

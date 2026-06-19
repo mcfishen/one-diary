@@ -84,7 +84,7 @@ export default function ModerationPage() {
         )}
 
         {filtered.map((post) => (
-          <article key={post.id} className="bg-white rounded-[20px] mb-3 overflow-hidden" style={{ boxShadow: "var(--shadow-sm)" }}>
+          <article key={post.id} className="rounded-[20px] mb-3 overflow-hidden" style={{ background: "var(--color-card)", boxShadow: "var(--shadow-sm)" }}>
             <div className="px-3.5 pt-3 pb-2">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[10px] font-black tracking-wide uppercase" style={{ color: "var(--color-orange)" }}>

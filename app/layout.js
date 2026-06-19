@@ -1,5 +1,6 @@
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata = {
   title: "ONE! Дневник",
@@ -22,7 +23,7 @@ export default function RootLayout({ children }) {
         <meta name="apple-mobile-web-app-title" content="ONE! Дневник" />
       </head>
       <body className="h-full">
-        <AuthProvider>{children}</AuthProvider>
+        <ThemeProvider><AuthProvider>{children}</AuthProvider></ThemeProvider>
       </body>
     </html>
   );

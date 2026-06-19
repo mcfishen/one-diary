@@ -28,7 +28,7 @@ export default function PostCard({ post }) {
   }
 
   return (
-    <article className="bg-white rounded-[20px] mb-3 overflow-hidden" style={{ boxShadow: "var(--shadow-sm)" }}>
+    <article className="rounded-[20px] mb-3 overflow-hidden" style={{ background: "var(--color-card)", boxShadow: "var(--shadow-sm)" }}>
       {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}
       {post.media_urls?.[0] && (
         <div className="relative h-36 overflow-hidden cursor-zoom-in"

@@ -56,8 +56,8 @@ export default function BottomNav({ isTeacher, isGuest }) {
 
   return (
     <nav
-      className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-[440px] bg-white rounded-[999px] flex items-center z-50"
-      style={{ boxShadow: "var(--shadow-nav)" }}
+      className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-[440px] rounded-[999px] flex items-center z-50"
+      style={{ background: "var(--color-card)", boxShadow: "var(--shadow-nav)" }}
       aria-label="Навигация"
     >
       {items.map((item) => {
