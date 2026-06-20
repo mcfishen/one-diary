@@ -4,6 +4,8 @@ import Avatar from "./Avatar";
 import { addReaction, deletePost } from "@/lib/db";
 import { useUser } from "./AuthProvider";
 import { useState, useEffect } from "react";
+
+const isVideoUrl = (url) => /\.(mp4|webm|mov|avi|mkv|m4v)(\?|$)/i.test(url);
 import Lightbox from "./Lightbox";
 
 function formatDate(ts) {
@@ -55,9 +57,9 @@ export default function PostCard({ post }) {
       {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}
       {post.media_urls?.[0] && (
         <div className="relative h-36 overflow-hidden cursor-zoom-in"
-             onClick={() => !post.media_urls[0].includes("video") && setLightbox(post.media_urls[0])}>
-          {post.media_urls[0].includes("video") ? (
-            <video src={post.media_urls[0]} className="w-full h-full object-cover" muted controls />
+             onClick={() => !isVideoUrl(post.media_urls[0]) && setLightbox(post.media_urls[0])}>
+          {isVideoUrl(post.media_urls[0]) ? (
+            <video src={post.media_urls[0]} className="w-full h-full object-cover" muted controls playsInline />
           ) : (
             <img src={post.media_urls[0]} alt="" className="w-full h-full object-cover" />
           )}

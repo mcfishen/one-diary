@@ -23,6 +23,7 @@ export default function CreatePage() {
   const [previews, setPreviews] = useState([]);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
   useEffect(() => {
     if (user === undefined) return;
@@ -44,6 +45,7 @@ export default function CreatePage() {
     e.preventDefault();
     if (!tripId || !text.trim()) return;
     setLoading(true);
+    setUploadError("");
     try {
       const trip = trips.find((t) => t.id === tripId);
       const post = await createPost({
@@ -64,6 +66,7 @@ export default function CreatePage() {
       setTimeout(() => router.replace("/feed"), 1800);
     } catch (err) {
       console.error(err);
+      setUploadError("Не удалось загрузить файл. Видео должно быть не больше 50 МБ.");
     } finally {
       setLoading(false);
     }
@@ -183,6 +186,13 @@ export default function CreatePage() {
             </div>
           )}
         </div>
+
+        {uploadError && (
+          <p className="text-[12px] font-black text-center rounded-[10px] px-4 py-2.5"
+             style={{ background: "rgba(198,40,40,0.1)", color: "#c62828" }}>
+            {uploadError}
+          </p>
+        )}
 
         <button type="submit" disabled={loading || !tripId || !text.trim()}
                 className="w-full rounded-full py-3.5 text-white font-black text-sm transition-opacity disabled:opacity-50 mb-2"

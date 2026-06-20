@@ -7,6 +7,8 @@ import Avatar from "@/components/Avatar";
 import Link from "next/link";
 import Lightbox from "@/components/Lightbox";
 
+const isVideoUrl = (url) => /\.(mp4|webm|mov|avi|mkv|m4v)(\?|$)/i.test(url);
+
 function formatDate(ts) {
   if (!ts) return "";
   return new Date(ts).toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
@@ -129,10 +131,16 @@ export default function PostPage({ params }) {
 
       {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}
       {post.media_urls?.[0] && (
-        <div className="w-full h-52 overflow-hidden cursor-zoom-in"
-             onClick={() => setLightbox(post.media_urls[0])}>
-          <img src={post.media_urls[0]} alt="" className="w-full h-full object-cover" />
-        </div>
+        isVideoUrl(post.media_urls[0]) ? (
+          <div className="w-full overflow-hidden" style={{ background: "#000" }}>
+            <video src={post.media_urls[0]} className="w-full max-h-72 object-contain" controls playsInline />
+          </div>
+        ) : (
+          <div className="w-full h-52 overflow-hidden cursor-zoom-in"
+               onClick={() => setLightbox(post.media_urls[0])}>
+            <img src={post.media_urls[0]} alt="" className="w-full h-full object-cover" />
+          </div>
+        )
       )}
 
       <div className="px-4 py-4">
