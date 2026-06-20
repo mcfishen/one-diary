@@ -73,7 +73,8 @@ export default function BottomNav({ isTeacher, isGuest }) {
             <span className="text-[9px] font-black tracking-wide">{item.label}</span>
             {active && (
               <span
-                className="w-1 h-1 rounded-full"
+                key={item.href}
+                className="tab-dot w-1 h-1 rounded-full"
                 style={{ background: "var(--color-orange)" }}
               />
             )}

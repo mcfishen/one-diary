@@ -28,6 +28,8 @@ export default function PostCard({ post }) {
   }, [user?.id, post.id]);
   const [lightbox, setLightbox] = useState(null);
   const [confirming, setConfirming] = useState(false);
+  const [popHeart, setPopHeart] = useState(false);
+  const [popStar, setPopStar] = useState(false);
   const [deleted, setDeleted] = useState(false);
 
   async function handleDelete() {
@@ -125,19 +127,21 @@ export default function PostCard({ post }) {
         </p>
 
         <div className="flex items-center gap-1.5">
-          <button onClick={() => handleReact("heart", liked, setLiked, setHearts)}
+          <button onClick={() => { handleReact("heart", liked, setLiked, setHearts); setPopHeart(true); setTimeout(() => setPopHeart(false), 250); }}
                   className="flex items-center gap-1 text-[11px] font-black rounded-full px-2.5 py-1.5"
                   style={{ background: liked ? "rgba(237,118,21,.1)" : "var(--color-sl)", color: liked ? "var(--color-orange)" : "var(--color-sub)" }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3 h-3">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}
+                 className={`w-3 h-3${popHeart ? " react-pop" : ""}`}>
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
             {hearts}
           </button>
 
-          <button onClick={() => handleReact("star", starred, setStarred, setStars)}
+          <button onClick={() => { handleReact("star", starred, setStarred, setStars); setPopStar(true); setTimeout(() => setPopStar(false), 250); }}
                   className="flex items-center gap-1 text-[11px] font-black rounded-full px-2.5 py-1.5"
                   style={{ background: starred ? "rgba(237,118,21,.1)" : "var(--color-sl)", color: starred ? "var(--color-orange)" : "var(--color-sub)" }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3 h-3">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}
+                 className={`w-3 h-3${popStar ? " react-pop" : ""}`}>
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
             {stars}
