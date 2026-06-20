@@ -1,5 +1,45 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "HelveticaNeueCYR";
+  src: url("/fonts/helveticaneuecyr_black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "HelveticaNeueCYR";
+  src: url("/fonts/helveticaneuecyr_roman.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "HelveticaNeueCYR";
+  src: url("/fonts/helveticaneuecyr_thin.otf") format("opentype");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "HelveticaNeueCYR";
+  src: url("/fonts/helveticaneuecyr_ultralight.otf") format("opentype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "HelveticaNeueCYR";
+  src: url("/fonts/helveticaneuecyr_ultralightitalic.otf") format("opentype");
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
 @theme {
   --color-navy:     #132245;
   --color-navy-700: #1f3a6e;
@@ -26,7 +66,7 @@
   --radius-xl:   20px;
   --radius-2xl:  24px;
 
-  --font-sans: "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "HelveticaNeueCYR", "Helvetica Neue", Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }

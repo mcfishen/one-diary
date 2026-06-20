@@ -11,6 +11,8 @@ import Achievements from "@/components/Achievements";
 import BottomNav from "@/components/BottomNav";
 import Avatar from "@/components/Avatar";
 import Link from "next/link";
+import HeroShapes from "@/components/HeroShapes";
+import PageShapes from "@/components/PageShapes";
 
 export default function ProfilePage() {
   const user = useUser();
@@ -53,9 +55,11 @@ export default function ProfilePage() {
   const uniqueTrips = new Set(posts.map((p) => p.trip_id).filter(Boolean)).size;
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: "var(--color-wh)" }}>
-      <div className="flex flex-col items-center text-center pb-5 pt-6 px-4"
+    <div className="min-h-screen pb-28 relative" style={{ background: "var(--color-wh)" }}>
+      <PageShapes />
+      <div className="flex flex-col items-center text-center pb-5 pt-6 px-4 relative"
            style={{ background: "var(--color-navy)" }}>
+        <HeroShapes />
         <div className="relative mb-3 cursor-pointer" onClick={() => avatarRef.current?.click()}>
           <Avatar
             name={profile?.display_name || ""}

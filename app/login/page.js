@@ -52,10 +52,10 @@ export default function LoginPage() {
       <div className="relative flex-1 flex flex-col justify-between px-6 pt-12 pb-8">
         {/* Logo + title */}
         <div className="flex flex-col items-center text-center">
-          <div className="relative w-28 h-28 mb-5">
+          <div className="relative w-44 h-44 mb-4">
             <Image src="/logo.png" alt="ONE! International School" fill style={{ objectFit: "contain" }} priority />
           </div>
-          <h1 className="text-white font-black text-[26px] leading-tight tracking-tight">
+          <h1 className="text-white font-black text-[28px] leading-tight tracking-tight">
             Дневник путешественника
           </h1>
           <p className="text-[13px] mt-2" style={{ color: "rgba(214,245,238,0.6)" }}>

@@ -7,6 +7,8 @@ import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
 import { useUser } from "@/components/AuthProvider";
 import Achievements from "@/components/Achievements";
+import HeroShapes from "@/components/HeroShapes";
+import PageShapes from "@/components/PageShapes";
 
 export default function UserProfilePage({ params }) {
   const { id } = use(params);
@@ -41,7 +43,8 @@ export default function UserProfilePage({ params }) {
   const isOwnProfile = currentUser?.id === id;
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: "var(--color-wh)" }}>
+    <div className="min-h-screen pb-28 relative" style={{ background: "var(--color-wh)" }}>
+      <PageShapes />
       <div className="px-4 pt-4 pb-2">
         <button onClick={() => router.back()}
                 className="w-8 h-8 rounded-full flex items-center justify-center"
@@ -52,8 +55,9 @@ export default function UserProfilePage({ params }) {
         </button>
       </div>
 
-      <div className="flex flex-col items-center text-center pb-5 px-4"
+      <div className="flex flex-col items-center text-center pb-5 px-4 relative"
            style={{ background: "var(--color-navy)" }}>
+        <HeroShapes />
         <Avatar name={profile.display_name || ""} photoURL={profile.photo_url} size={64} className="mb-3"
                 style={{ border: "3px solid var(--color-orange)" }} />
         <h1 className="text-[18px] font-black text-white tracking-tight">{profile.display_name || "—"}</h1>

@@ -5,6 +5,7 @@ import { useUser } from "@/components/AuthProvider";
 import { getUser, getTrips, createPost, updatePostMediaUrls } from "@/lib/db";
 import { uploadMedia } from "@/lib/storage";
 import BottomNav from "@/components/BottomNav";
+import PageShapes from "@/components/PageShapes";
 
 const MOODS = ["Восторг", "Интерес", "Радость", "Удивление", "Задумчивость", "Спокойствие"];
 
@@ -87,7 +88,8 @@ export default function CreatePage() {
   }
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: "var(--color-wh)" }}>
+    <div className="min-h-screen pb-28 relative" style={{ background: "var(--color-wh)" }}>
+      <PageShapes />
       <div className="flex items-center justify-between px-4 pt-5 pb-3" style={{ background: "var(--color-navy)" }}>
         <div>
           <h1 className="text-[18px] font-black text-white tracking-tight">Новая запись</h1>

@@ -7,6 +7,7 @@ import BottomNav from "@/components/BottomNav";
 import PostCard from "@/components/PostCard";
 import Avatar from "@/components/Avatar";
 import Link from "next/link";
+import PageShapes from "@/components/PageShapes";
 
 const FILTERS = ["Все", "Мой класс", "Мои записи"];
 
@@ -71,7 +72,8 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: "var(--color-wh)" }}>
+    <div className="min-h-screen pb-28 relative" style={{ background: "var(--color-wh)" }}>
+      <PageShapes />
       {/* Header */}
       <div className="px-4 pt-5 pb-0 flex items-start justify-between">
         <div>
