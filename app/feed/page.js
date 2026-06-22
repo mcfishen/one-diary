@@ -80,7 +80,7 @@ export default function FeedPage() {
           <p className="text-[10px] font-black tracking-widest uppercase" style={{ color: "var(--color-sub)" }}>
             {isGuest ? "ONE! International School" : "Добрый день"}
           </p>
-          <h1 className="text-[22px] font-black tracking-tight leading-none mt-0.5" style={{ color: "var(--color-navy)" }}>
+          <h1 className="text-[22px] font-black tracking-tight leading-none mt-0.5" style={{ color: "var(--color-title)" }}>
             {isGuest ? "Лента поездок" : (profile?.display_name?.split(" ")[0] || "Ученик")}
           </h1>
         </div>
@@ -147,7 +147,7 @@ export default function FeedPage() {
       {isGuest && (
         <div className="mx-4 mb-2 rounded-[14px] px-4 py-3 flex items-center justify-between"
              style={{ background: "var(--color-mint)" }}>
-          <p className="text-[12px] font-black" style={{ color: "var(--color-navy)" }}>
+          <p className="text-[12px] font-black" style={{ color: "var(--color-title)" }}>
             Войди чтобы делиться записями
           </p>
           <Link href="/login" className="rounded-full px-3 py-1.5 text-[11px] font-black text-white flex-shrink-0"

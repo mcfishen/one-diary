@@ -97,7 +97,7 @@ export default function CreatePage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-6 text-center">
         <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: "var(--color-mint)" }}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-navy)" strokeWidth={2.5} className="w-8 h-8">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-title)" strokeWidth={2.5} className="w-8 h-8">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
@@ -199,7 +199,7 @@ export default function CreatePage() {
             {PROMPTS.map((p) => (
               <button key={p.text} type="button" onClick={() => addPrompt(p.text)}
                       className="text-[11px] font-black rounded-full px-2.5 py-1 flex items-center gap-1 transition-opacity active:opacity-60"
-                      style={{ background: "var(--color-mint)", color: "var(--color-navy-700)" }}>
+                      style={{ background: "var(--color-mint)", color: "var(--color-title)" }}>
                 <span>{p.emoji}</span> {p.text}
               </button>
             ))}
@@ -279,10 +279,10 @@ export default function CreatePage() {
         </button>
 
         <div className="rounded-[12px] p-3 flex items-center gap-2.5 mb-4" style={{ background: "var(--color-mint)" }}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-navy-700)" strokeWidth={2} className="w-3.5 h-3.5 flex-shrink-0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-title)" strokeWidth={2} className="w-3.5 h-3.5 flex-shrink-0">
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
           </svg>
-          <p className="text-[11px]" style={{ color: "var(--color-navy-700)" }}>
+          <p className="text-[11px]" style={{ color: "var(--color-title)" }}>
             Учитель проверит запись перед публикацией в ленте
           </p>
         </div>
