@@ -73,7 +73,7 @@ export default function CreatePage() {
         authorPhoto: profile?.photo_url || "",
       });
       if (files.length) {
-        const urls = await Promise.all(files.map((f) => uploadMedia(f, post.id)));
+        const urls = await Promise.all(files.map((f, i) => uploadMedia(f, post.id, i)));
         await updatePostMediaUrls(post.id, urls);
       }
       setDone(true);
