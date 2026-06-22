@@ -6,6 +6,10 @@ export const metadata = {
   title: "ONE! Дневник",
   description: "Дневник школьных поездок ONE! International School",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/icon-192.png",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export const viewport = {
