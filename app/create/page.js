@@ -6,6 +6,7 @@ import { getUser, getTrips, createPost, updatePostMediaUrls } from "@/lib/db";
 import { uploadMedia } from "@/lib/storage";
 import BottomNav from "@/components/BottomNav";
 import PageShapes from "@/components/PageShapes";
+import { WEATHER, PROMPTS } from "@/lib/diary";
 
 const MOODS = ["Восторг", "Интерес", "Радость", "Удивление", "Задумчивость", "Спокойствие"];
 
@@ -19,6 +20,8 @@ export default function CreatePage() {
   const [tripId, setTripId] = useState("");
   const [text, setText] = useState("");
   const [mood, setMood] = useState("");
+  const [location, setLocation] = useState("");
+  const [weather, setWeather] = useState("");
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -34,11 +37,20 @@ export default function CreatePage() {
 
   function handleFiles(e) {
     const selected = Array.from(e.target.files);
-    setFiles((prev) => [...prev, ...selected]);
+    setFiles((prev) => [...prev, ...selected].slice(0, 10));
     selected.forEach((f) => {
       const url = URL.createObjectURL(f);
-      setPreviews((prev) => [...prev, { url, type: f.type }]);
+      setPreviews((prev) => [...prev, { url, type: f.type }].slice(0, 10));
     });
+  }
+
+  function removeFile(i) {
+    setFiles((prev) => prev.filter((_, idx) => idx !== i));
+    setPreviews((prev) => prev.filter((_, idx) => idx !== i));
+  }
+
+  function addPrompt(p) {
+    setText((t) => (t.trim() ? `${t.trim()}\n\n${p} ` : `${p} `));
   }
 
   async function handleSubmit(e) {
@@ -53,6 +65,8 @@ export default function CreatePage() {
         tripName: trip?.name || "",
         text,
         mood,
+        location,
+        weather,
         authorId:    user.id,
         authorName:  profile?.display_name || "",
         authorClass: profile?.class || "",
@@ -95,8 +109,10 @@ export default function CreatePage() {
       <PageShapes />
       <div className="flex items-center justify-between px-4 pt-5 pb-3" style={{ background: "var(--color-navy)" }}>
         <div>
-          <h1 className="text-[18px] font-black text-white tracking-tight">Новая запись</h1>
-          <p className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.45)" }}>Расскажи о своей поездке</p>
+          <p className="text-[10px] font-black tracking-widest uppercase mb-0.5" style={{ color: "var(--color-orange)" }}>
+            🧭 Дневник исследователя
+          </p>
+          <h1 className="text-[18px] font-black text-white tracking-tight">Заметки путешественника</h1>
         </div>
         <button onClick={() => router.back()} aria-label="Закрыть"
                 className="w-8 h-8 rounded-full flex items-center justify-center"
@@ -136,11 +152,51 @@ export default function CreatePage() {
         </div>
 
         <div>
-          <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "var(--color-title)" }}>Впечатления</p>
-          <textarea value={text} onChange={(e) => setText(e.target.value)} rows={5} required
-                    placeholder="Что тебе понравилось? Что удивило? Что запомнится навсегда?"
+          <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "var(--color-title)" }}>Место</p>
+          <div className="relative">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-orange)" strokeWidth={2.5}
+                 className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
+            </svg>
+            <input value={location} onChange={(e) => setLocation(e.target.value)}
+                   placeholder="Где ты побывал?"
+                   className="w-full rounded-[12px] pl-10 pr-3.5 py-3 text-[13px] outline-none"
+                   style={{ border: "1.5px solid var(--color-hr)", background: "var(--color-card)", color: "var(--color-ink)" }} />
+          </div>
+        </div>
+
+        <div>
+          <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "var(--color-title)" }}>Погода в тот день</p>
+          <div className="flex flex-wrap gap-2">
+            {WEATHER.map((w) => (
+              <button key={w.key} type="button" onClick={() => setWeather(weather === w.key ? "" : w.key)}
+                      className="text-[12px] font-black rounded-full px-3 py-1.5 flex items-center gap-1.5 transition-colors"
+                      style={{
+                        border: `1.5px solid ${weather === w.key ? "var(--color-orange)" : "var(--color-hr)"}`,
+                        background: weather === w.key ? "rgba(237,118,21,0.08)" : "var(--color-card)",
+                        color: weather === w.key ? "var(--color-orange)" : "var(--color-sub)",
+                      }}>
+                <span>{w.emoji}</span> {w.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "var(--color-title)" }}>Заметки</p>
+          <textarea value={text} onChange={(e) => setText(e.target.value)} rows={6} required
+                    placeholder="Что ты увидел и почувствовал? Что удивило? Что запомнится навсегда?"
                     className="w-full rounded-[12px] px-3.5 py-3 text-[13px] leading-relaxed outline-none resize-none"
                     style={{ border: "1.5px solid var(--color-hr)", background: "var(--color-card)", color: "var(--color-ink)" }} />
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {PROMPTS.map((p) => (
+              <button key={p.text} type="button" onClick={() => addPrompt(p.text)}
+                      className="text-[11px] font-black rounded-full px-2.5 py-1 flex items-center gap-1 transition-opacity active:opacity-60"
+                      style={{ background: "var(--color-mint)", color: "var(--color-navy-700)" }}>
+                <span>{p.emoji}</span> {p.text}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div>
@@ -161,26 +217,41 @@ export default function CreatePage() {
         </div>
 
         <div>
-          <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "var(--color-title)" }}>Фото и видео</p>
-          <button type="button" onClick={() => fileRef.current.click()}
-                  className="w-full rounded-[12px] py-5 flex flex-col items-center gap-2"
-                  style={{ border: "1.5px dashed var(--color-orange)", background: "rgba(237,118,21,0.04)" }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-orange)" strokeWidth={1.5} className="w-6 h-6">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" />
-            </svg>
-            <p className="text-[11px] font-black" style={{ color: "var(--color-orange)" }}>Добавить фото или видео</p>
-          </button>
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-[10px] font-black tracking-widest uppercase" style={{ color: "var(--color-title)" }}>Фото и видео</p>
+            <span className="text-[10px] font-black" style={{ color: "var(--color-sub)" }}>{previews.length}/10</span>
+          </div>
+          {previews.length < 10 && (
+            <button type="button" onClick={() => fileRef.current.click()}
+                    className="w-full rounded-[12px] py-5 flex flex-col items-center gap-2"
+                    style={{ border: "1.5px dashed var(--color-orange)", background: "rgba(237,118,21,0.04)" }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-orange)" strokeWidth={1.5} className="w-6 h-6">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" />
+              </svg>
+              <p className="text-[11px] font-black" style={{ color: "var(--color-orange)" }}>
+                Добавить фото или видео
+              </p>
+              <p className="text-[10px]" style={{ color: "var(--color-sub)" }}>можно выбрать сразу несколько</p>
+            </button>
+          )}
           <input ref={fileRef} type="file" multiple accept="image/*,video/*" className="hidden" onChange={handleFiles} />
           {previews.length > 0 && (
-            <div className="flex gap-2 mt-2 overflow-x-auto pb-1">
+            <div className="flex gap-2 mt-2 overflow-x-auto pb-1 scrollbar-none">
               {previews.map((p, i) => (
-                <div key={i} className="w-16 h-16 rounded-[10px] flex-shrink-0 overflow-hidden" style={{ background: "var(--color-sl)" }}>
+                <div key={i} className="relative w-16 h-16 rounded-[10px] flex-shrink-0 overflow-hidden" style={{ background: "var(--color-sl)" }}>
                   {p.type.startsWith("video") ? (
                     <video src={p.url} className="w-full h-full object-cover" />
                   ) : (
                     <img src={p.url} alt="" className="w-full h-full object-cover" />
                   )}
+                  <button type="button" onClick={() => removeFile(i)} aria-label="Убрать"
+                          className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full flex items-center justify-center"
+                          style={{ background: "rgba(19,34,69,0.75)" }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={3} className="w-2.5 h-2.5">
+                      <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
                 </div>
               ))}
             </div>

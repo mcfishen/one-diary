@@ -142,6 +142,13 @@ input, textarea, select, button {
   }
 }
 
+/* ── Hide scrollbars (chips, galleries) ───────────── */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 [data-theme="dark"] input::placeholder,
 [data-theme="dark"] textarea::placeholder {
   color: rgba(138,158,189,0.5);

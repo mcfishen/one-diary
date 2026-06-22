@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useUser } from "./AuthProvider";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 const NAV = [
   {
@@ -39,6 +40,8 @@ const NAV = [
 
 export default function BottomNav({ isTeacher, isGuest }) {
   const path = usePathname();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const guestNav = [NAV[0], { href: "/login", label: "Войти", icon: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
@@ -54,7 +57,9 @@ export default function BottomNav({ isTeacher, isGuest }) {
       )}]
     : NAV;
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal((
     <nav
       className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-[440px] rounded-[999px] flex items-center z-50"
       style={{ background: "var(--color-card)", boxShadow: "var(--shadow-nav)" }}
@@ -82,5 +87,5 @@ export default function BottomNav({ isTeacher, isGuest }) {
         );
       })}
     </nav>
-  );
+  ), document.body);
 }

@@ -4,9 +4,9 @@ import Avatar from "./Avatar";
 import { addReaction, deletePost } from "@/lib/db";
 import { useUser } from "./AuthProvider";
 import { useState, useEffect } from "react";
-
-const isVideoUrl = (url) => /\.(mp4|webm|mov|avi|mkv|m4v)(\?|$)/i.test(url);
 import Lightbox from "./Lightbox";
+import MediaGallery from "./MediaGallery";
+import { weatherEmoji, weatherLabel } from "@/lib/diary";
 
 function formatDate(ts) {
   if (!ts) return "";
@@ -53,20 +53,16 @@ export default function PostCard({ post }) {
   if (deleted) return null;
 
   const isOwner = user?.id === post.author_id;
+  const commentCount = post.comments?.[0]?.count ?? 0;
 
   return (
     <article className="rounded-[20px] mb-3 overflow-hidden" style={{ background: "var(--color-card)", boxShadow: "var(--shadow-sm)" }}>
       {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}
-      {post.media_urls?.[0] && (
-        <div className="relative h-36 overflow-hidden cursor-zoom-in"
-             onClick={() => !isVideoUrl(post.media_urls[0]) && setLightbox(post.media_urls[0])}>
-          {isVideoUrl(post.media_urls[0]) ? (
-            <video src={post.media_urls[0]} className="w-full h-full object-cover" muted controls playsInline />
-          ) : (
-            <img src={post.media_urls[0]} alt="" className="w-full h-full object-cover" />
-          )}
+      {post.media_urls?.length > 0 && (
+        <div className="relative">
+          <MediaGallery urls={post.media_urls} height={144} onImageClick={setLightbox} />
           {post.trip_name && (
-            <span className="absolute top-2.5 left-2.5 text-white text-[10px] font-black rounded-full px-2.5 py-1"
+            <span className="absolute top-2.5 left-2.5 text-white text-[10px] font-black rounded-full px-2.5 py-1 pointer-events-none"
                   style={{ background: "rgba(19,34,69,0.8)" }}>
               {post.trip_name}
             </span>
@@ -75,7 +71,7 @@ export default function PostCard({ post }) {
       )}
 
       <div className="px-3.5 py-3">
-        {!post.media_urls?.[0] && post.trip_name && (
+        {!post.media_urls?.length && post.trip_name && (
           <p className="text-[10px] font-black tracking-wide uppercase mb-2" style={{ color: "var(--color-orange)" }}>
             {post.trip_name}
           </p>
@@ -122,6 +118,20 @@ export default function PostCard({ post }) {
         )}
         </div>
 
+        {(post.location || post.weather) && (
+          <div className="flex items-center gap-2.5 mb-2 text-[11px] font-black flex-wrap" style={{ color: "var(--color-sub)" }}>
+            {post.location && (
+              <span className="flex items-center gap-1">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-orange)" strokeWidth={2.5} className="w-3 h-3">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
+                </svg>
+                {post.location}
+              </span>
+            )}
+            {post.weather && <span>{weatherEmoji(post.weather)} {weatherLabel(post.weather)}</span>}
+          </div>
+        )}
+
         <p className="text-[13px] leading-relaxed mb-2.5 line-clamp-3" style={{ color: "var(--color-ink)" }}>
           {post.text}
         </p>
@@ -146,6 +156,15 @@ export default function PostCard({ post }) {
             </svg>
             {stars}
           </button>
+
+          <Link href={`/post/${post.id}#comments`}
+                className="flex items-center gap-1 text-[11px] font-black rounded-full px-2.5 py-1.5"
+                style={{ background: "var(--color-sl)", color: "var(--color-sub)" }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3 h-3">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+            </svg>
+            {commentCount}
+          </Link>
 
           <Link href={`/post/${post.id}`} className="ml-auto text-[11px] font-black" style={{ color: "var(--color-orange)" }}>
             Читать далее

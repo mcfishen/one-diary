@@ -6,8 +6,8 @@ import { getPost, addReaction, addComment, getUser, deletePost } from "@/lib/db"
 import Avatar from "@/components/Avatar";
 import Link from "next/link";
 import Lightbox from "@/components/Lightbox";
-
-const isVideoUrl = (url) => /\.(mp4|webm|mov|avi|mkv|m4v)(\?|$)/i.test(url);
+import MediaGallery from "@/components/MediaGallery";
+import { weatherEmoji, weatherLabel } from "@/lib/diary";
 
 function formatDate(ts) {
   if (!ts) return "";
@@ -130,17 +130,8 @@ export default function PostPage({ params }) {
       </div>
 
       {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}
-      {post.media_urls?.[0] && (
-        isVideoUrl(post.media_urls[0]) ? (
-          <div className="w-full overflow-hidden" style={{ background: "#000" }}>
-            <video src={post.media_urls[0]} className="w-full max-h-72 object-contain" controls playsInline />
-          </div>
-        ) : (
-          <div className="w-full h-52 overflow-hidden cursor-zoom-in"
-               onClick={() => setLightbox(post.media_urls[0])}>
-            <img src={post.media_urls[0]} alt="" className="w-full h-full object-cover" />
-          </div>
-        )
+      {post.media_urls?.length > 0 && (
+        <MediaGallery urls={post.media_urls} height={260} onImageClick={setLightbox} />
       )}
 
       <div className="px-4 py-4">
@@ -159,6 +150,20 @@ export default function PostPage({ params }) {
             </p>
           </div>
         </div>
+
+        {(post.location || post.weather) && (
+          <div className="flex items-center gap-3 mb-4 text-[12px] font-black flex-wrap" style={{ color: "var(--color-sub)" }}>
+            {post.location && (
+              <span className="flex items-center gap-1.5">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-orange)" strokeWidth={2.5} className="w-3.5 h-3.5">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
+                </svg>
+                {post.location}
+              </span>
+            )}
+            {post.weather && <span>{weatherEmoji(post.weather)} {weatherLabel(post.weather)}</span>}
+          </div>
+        )}
 
         <p className="text-[14px] leading-[1.65] mb-4" style={{ color: "var(--color-ink)" }}>{post.text}</p>
 
@@ -187,9 +192,9 @@ export default function PostPage({ params }) {
           ))}
         </div>
 
-        <div style={{ borderTop: "1px solid var(--color-hr)" }} className="pt-4">
+        <div id="comments" style={{ borderTop: "1px solid var(--color-hr)" }} className="pt-4 scroll-mt-4">
           <p className="text-[10px] font-black tracking-widest uppercase mb-3" style={{ color: "var(--color-title)" }}>
-            Комментарии
+            Комментарии · {(post.comments || []).length}
           </p>
 
           {(post.comments || []).map((c, i) => (

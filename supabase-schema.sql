@@ -31,6 +31,8 @@ CREATE TABLE posts (
   author_name  TEXT,
   author_class TEXT,
   author_photo TEXT,
+  location     TEXT,
+  weather      TEXT,
   media_urls   TEXT[] DEFAULT '{}',
   heart_count  INT  DEFAULT 0,
   star_count   INT  DEFAULT 0,
