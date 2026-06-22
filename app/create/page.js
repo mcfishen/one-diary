@@ -80,7 +80,14 @@ export default function CreatePage() {
       setTimeout(() => router.replace("/feed"), 1800);
     } catch (err) {
       console.error(err);
-      setUploadError("Не удалось загрузить файл. Видео должно быть не больше 50 МБ.");
+      const msg = err?.message || "";
+      if (/location|weather|column/i.test(msg)) {
+        setUploadError("База ещё не обновлена: нужно выполнить SQL-миграцию (location/weather) в Supabase.");
+      } else if (/exceeded|too large|maximum|size/i.test(msg)) {
+        setUploadError("Файл слишком большой. Видео должно быть не больше 50 МБ.");
+      } else {
+        setUploadError(msg || "Не удалось опубликовать запись. Попробуй ещё раз.");
+      }
     } finally {
       setLoading(false);
     }
