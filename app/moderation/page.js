@@ -37,6 +37,12 @@ export default function ModerationPage() {
   async function handleAction(postId, status) {
     setProcessing((p) => ({ ...p, [postId]: true }));
     await updatePostStatus(postId, status);
+    // Сразу обновляем локально (опрос подтвердит позже)
+    setPosts((list) =>
+      status === "rejected"
+        ? list.filter((p) => p.id !== postId)
+        : list.map((p) => (p.id === postId ? { ...p, status } : p))
+    );
     setProcessing((p) => ({ ...p, [postId]: false }));
   }
 
