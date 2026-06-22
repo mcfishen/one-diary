@@ -1,3 +1,5 @@
+import { mediaUrl } from "@/lib/diary";
+
 export default function Avatar({ name = "", photoURL, size = 32, className = "" }) {
   const initials = name
     .split(" ")
@@ -27,7 +29,7 @@ export default function Avatar({ name = "", photoURL, size = 32, className = "" 
       }}
     >
       {photoURL ? (
-        <img src={photoURL} alt={name} className="w-full h-full object-cover" />
+        <img src={mediaUrl(photoURL)} alt={name} className="w-full h-full object-cover" />
       ) : (
         initials || "?"
       )}

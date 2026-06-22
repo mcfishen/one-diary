@@ -14,6 +14,7 @@ import Link from "next/link";
 import HeroShapes from "@/components/HeroShapes";
 import PageShapes from "@/components/PageShapes";
 import CreateStudent from "@/components/CreateStudent";
+import { mediaUrl } from "@/lib/diary";
 
 const ADMIN_EMAIL = "ruslanfom2@gmail.com";
 
@@ -125,7 +126,7 @@ export default function ProfilePage() {
                   className="relative aspect-square rounded-[10px] overflow-hidden"
                   style={{ background: "var(--color-sl)" }}>
               {post.media_urls?.[0] ? (
-                <img src={post.media_urls[0]} alt="" className="w-full h-full object-cover" />
+                <img src={mediaUrl(post.media_urls[0])} alt="" className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center p-3">
                   <p className="text-[10px] font-black text-center line-clamp-4" style={{ color: "var(--color-sub)" }}>

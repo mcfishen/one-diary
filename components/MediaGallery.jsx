@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
-import { isVideoUrl } from "@/lib/diary";
+import { isVideoUrl, mediaUrl } from "@/lib/diary";
 
 export default function MediaGallery({ urls = [], height = 144, onImageClick }) {
   const [active, setActive] = useState(0);
@@ -49,13 +49,13 @@ export default function MediaGallery({ urls = [], height = 144, onImageClick }) 
         {urls.map((url, i) => (
           <div key={i} className="flex-shrink-0 w-full h-full" style={{ scrollSnapAlign: "center" }}>
             {isVideoUrl(url) ? (
-              <video src={url} className="w-full h-full object-cover" controls playsInline muted />
+              <video src={mediaUrl(url)} className="w-full h-full object-cover" controls playsInline muted />
             ) : (
               <img
-                src={url}
+                src={mediaUrl(url)}
                 alt=""
                 className="w-full h-full object-cover cursor-zoom-in"
-                onClick={() => onImageClick?.(url)}
+                onClick={() => onImageClick?.(mediaUrl(url))}
               />
             )}
           </div>

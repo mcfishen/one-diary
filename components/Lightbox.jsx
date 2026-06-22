@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { mediaUrl } from "@/lib/diary";
 
 export default function Lightbox({ src, onClose }) {
   const [mounted, setMounted] = useState(false);
@@ -34,7 +35,7 @@ export default function Lightbox({ src, onClose }) {
         </svg>
       </button>
       <img
-        src={src}
+        src={mediaUrl(src)}
         alt=""
         className="object-contain rounded-[4px]"
         style={{ maxHeight: "88vh", maxWidth: "92vw" }}
