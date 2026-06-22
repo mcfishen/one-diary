@@ -1,7 +1,11 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 export default function Lightbox({ src, onClose }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   useEffect(() => {
     const handler = (e) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", handler);
@@ -12,7 +16,9 @@ export default function Lightbox({ src, onClose }) {
     };
   }, [onClose]);
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal((
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center"
       style={{ background: "rgba(0,0,0,0.96)" }}
@@ -35,5 +41,5 @@ export default function Lightbox({ src, onClose }) {
         onClick={(e) => e.stopPropagation()}
       />
     </div>
-  );
+  ), document.body);
 }
