@@ -13,6 +13,9 @@ import Avatar from "@/components/Avatar";
 import Link from "next/link";
 import HeroShapes from "@/components/HeroShapes";
 import PageShapes from "@/components/PageShapes";
+import CreateStudent from "@/components/CreateStudent";
+
+const ADMIN_EMAIL = "ruslanfom2@gmail.com";
 
 export default function ProfilePage() {
   const user = useUser();
@@ -161,6 +164,8 @@ export default function ProfilePage() {
             <p className="text-[10px] font-black tracking-widest uppercase mb-1" style={{ color: "var(--color-sub)" }}>Email</p>
             <p className="text-[13px]" style={{ color: "var(--color-ink)" }}>{user?.email || "—"}</p>
           </div>
+
+          {user?.email?.toLowerCase() === ADMIN_EMAIL && <CreateStudent />}
 
           <Achievements posts={posts} />
           {/* Dark mode toggle */}
