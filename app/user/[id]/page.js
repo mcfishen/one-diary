@@ -10,6 +10,9 @@ import Achievements from "@/components/Achievements";
 import HeroShapes from "@/components/HeroShapes";
 import PageShapes from "@/components/PageShapes";
 import { mediaUrl } from "@/lib/diary";
+import { supabase } from "@/lib/supabase";
+
+const ADMIN_EMAIL = "ruslanfom2@gmail.com";
 
 export default function UserProfilePage({ params }) {
   const { id } = use(params);
@@ -19,6 +22,35 @@ export default function UserProfilePage({ params }) {
   const [posts, setPosts] = useState([]);
   const [myProfile, setMyProfile] = useState(null);
   const [tab, setTab] = useState(0);
+  const [confirmDel, setConfirmDel] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [delError, setDelError] = useState("");
+
+  async function handleDeleteUser() {
+    setDeleting(true);
+    setDelError("");
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/delete-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token || ""}`,
+        },
+        body: JSON.stringify({ userId: id }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setDelError(data.error || "Не удалось удалить.");
+        setDeleting(false);
+      } else {
+        router.replace("/people");
+      }
+    } catch {
+      setDelError("Ошибка сети.");
+      setDeleting(false);
+    }
+  }
 
   useEffect(() => {
     if (!id) return;
@@ -133,6 +165,45 @@ export default function UserProfilePage({ params }) {
       {tab === 1 && (
         <div className="px-4 py-5">
           <Achievements posts={posts} />
+        </div>
+      )}
+
+      {currentUser?.email?.toLowerCase() === ADMIN_EMAIL && !isOwnProfile && (
+        <div className="px-4 pt-4 pb-2">
+          {delError && (
+            <p className="text-[12px] font-black text-center rounded-[10px] px-4 py-2.5 mb-2"
+               style={{ background: "rgba(198,40,40,0.1)", color: "#c62828" }}>
+              {delError}
+            </p>
+          )}
+          {confirmDel ? (
+            <div className="rounded-[12px] p-3.5" style={{ background: "rgba(198,40,40,0.06)", border: "1.5px solid rgba(198,40,40,0.25)" }}>
+              <p className="text-[12px] font-black mb-1" style={{ color: "#c62828" }}>
+                Удалить «{profile.display_name}»?
+              </p>
+              <p className="text-[11px] mb-3" style={{ color: "var(--color-sub)" }}>
+                Аккаунт и все его записи будут удалены навсегда.
+              </p>
+              <div className="flex gap-2">
+                <button onClick={handleDeleteUser} disabled={deleting}
+                        className="flex-1 rounded-full py-2.5 text-[12px] font-black text-white disabled:opacity-50"
+                        style={{ background: "#c62828" }}>
+                  {deleting ? "Удаляем..." : "Да, удалить"}
+                </button>
+                <button onClick={() => setConfirmDel(false)} disabled={deleting}
+                        className="flex-1 rounded-full py-2.5 text-[12px] font-black"
+                        style={{ background: "var(--color-sl)", color: "var(--color-sub)" }}>
+                  Отмена
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button onClick={() => setConfirmDel(true)}
+                    className="w-full rounded-full py-3 text-[12px] font-black"
+                    style={{ border: "1.5px solid rgba(198,40,40,0.3)", color: "#c62828" }}>
+              Удалить участника
+            </button>
+          )}
         </div>
       )}
 
