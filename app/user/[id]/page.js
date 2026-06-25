@@ -9,7 +9,7 @@ import { useUser } from "@/components/AuthProvider";
 import Achievements from "@/components/Achievements";
 import HeroShapes from "@/components/HeroShapes";
 import PageShapes from "@/components/PageShapes";
-import { mediaUrl } from "@/lib/diary";
+import { mediaUrl, isVideoUrl } from "@/lib/diary";
 import { supabase } from "@/lib/supabase";
 
 const ADMIN_EMAIL = "ruslanfom2@gmail.com";
@@ -138,7 +138,18 @@ export default function UserProfilePage({ params }) {
                   className="relative aspect-square rounded-[10px] overflow-hidden"
                   style={{ background: "var(--color-sl)" }}>
               {post.media_urls?.[0] ? (
-                <img src={mediaUrl(post.media_urls[0])} alt="" className="w-full h-full object-cover" />
+                isVideoUrl(post.media_urls[0]) ? (
+                  <div className="relative w-full h-full" style={{ background: "var(--color-navy)" }}>
+                    <video src={mediaUrl(post.media_urls[0])} className="w-full h-full object-cover" muted preload="metadata" playsInline />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.85)" }}>
+                        <svg viewBox="0 0 24 24" fill="var(--color-navy)" className="w-4 h-4 ml-0.5"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <img src={mediaUrl(post.media_urls[0])} alt="" className="w-full h-full object-cover" />
+                )
               ) : (
                 <div className="w-full h-full flex items-center justify-center p-3">
                   <p className="text-[10px] font-black text-center line-clamp-4" style={{ color: "var(--color-sub)" }}>
