@@ -76,13 +76,18 @@ export default function FeedPage() {
       <PageShapes />
       {/* Header */}
       <div className="px-4 pt-5 pb-0 flex items-start justify-between">
-        <div>
-          <p className="text-[10px] font-black tracking-widest uppercase" style={{ color: "var(--color-sub)" }}>
-            {isGuest ? "ONE! International School" : "Добрый день"}
-          </p>
-          <h1 className="text-[22px] font-black tracking-tight leading-none mt-0.5" style={{ color: "var(--color-title)" }}>
-            {isGuest ? "Лента поездок" : (profile?.display_name?.split(" ")[0] || "Ученик")}
-          </h1>
+        <div className="flex items-center gap-2.5">
+          <img src="/icon-192.png" alt="ONE! International School"
+               className="w-10 h-10 rounded-[11px] flex-shrink-0"
+               style={{ boxShadow: "var(--shadow-sm)" }} />
+          <div>
+            <p className="text-[10px] font-black tracking-widest uppercase" style={{ color: "var(--color-sub)" }}>
+              {isGuest ? "ONE! International School" : "Добрый день"}
+            </p>
+            <h1 className="text-[22px] font-black tracking-tight leading-none mt-0.5" style={{ color: "var(--color-title)" }}>
+              {isGuest ? "Лента поездок" : (profile?.display_name?.split(" ")[0] || "Ученик")}
+            </h1>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => setShowSearch((s) => !s)}
