@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useUser } from "@/components/AuthProvider";
-import { getUser, getUserPosts, updateProfile } from "@/lib/db";
+import { getUser, getUserPosts, getMyPosts, getTrips, updateProfile } from "@/lib/db";
 import { uploadAvatar } from "@/lib/storage";
 import { useRef } from "react";
 import { useTheme } from "@/components/ThemeProvider";
@@ -15,6 +15,8 @@ import HeroShapes from "@/components/HeroShapes";
 import PageShapes from "@/components/PageShapes";
 import CreateStudent from "@/components/CreateStudent";
 import { mediaUrl, isVideoUrl } from "@/lib/diary";
+import TravelPassport from "@/components/TravelPassport";
+import MoodTrack from "@/components/MoodTrack";
 
 const ADMIN_EMAIL = "ruslanfom2@gmail.com";
 
@@ -23,6 +25,8 @@ export default function ProfilePage() {
   const router = useRouter();
   const [profile, setProfile] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [allMyPosts, setAllMyPosts] = useState([]);
+  const [trips, setTrips] = useState([]);
   const [tab, setTab] = useState(0);
   const [avatarLoading, setAvatarLoading] = useState(false);
   const avatarRef = useRef();
@@ -33,6 +37,8 @@ export default function ProfilePage() {
     if (!user) { router.replace("/login"); return; }
     getUser(user.id).then(setProfile);
     getUserPosts(user.id).then(setPosts);
+    getMyPosts(user.id).then(setAllMyPosts);
+    getTrips().then(setTrips);
   }, [user, router]);
 
   async function handleAvatarChange(e) {
@@ -107,7 +113,7 @@ export default function ProfilePage() {
       </div>
 
       <div className="flex" style={{ borderBottom: "1px solid var(--color-hr)" }}>
-        {["Записи", "О себе"].map((t, i) => (
+        {["Записи", "Паспорт", "О себе"].map((t, i) => (
           <button key={t} onClick={() => setTab(i)}
                   className="flex-1 py-3 text-[11px] font-black tracking-wide transition-colors"
                   style={{
@@ -121,7 +127,7 @@ export default function ProfilePage() {
 
       {tab === 0 && (
         <div className="grid grid-cols-2 gap-[3px] p-[3px]">
-          {posts.map((post) => (
+          {allMyPosts.map((post) => (
             <Link key={post.id} href={`/post/${post.id}`}
                   className="relative aspect-square rounded-[10px] overflow-hidden"
                   style={{ background: "var(--color-sl)" }}>
@@ -145,6 +151,17 @@ export default function ProfilePage() {
                   </p>
                 </div>
               )}
+              {post.status !== "published" && (
+                <span className="absolute top-1.5 left-1.5 text-[8px] font-black rounded-full px-2 py-1"
+                      style={{ background: post.status === "rejected" ? "rgba(198,40,40,0.85)" : "rgba(237,118,21,0.85)", color: "#fff" }}>
+                  {post.status === "rejected" ? "Отклонено" : "На проверке"}
+                </span>
+              )}
+              {post.featured && (
+                <span className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.9)" }}>
+                  <svg viewBox="0 0 24 24" fill="var(--color-orange)" className="w-3 h-3"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+                </span>
+              )}
               {post.trip_name && (
                 <div className="absolute bottom-0 left-0 right-0 px-2 py-1.5"
                      style={{ background: "rgba(19,34,69,0.55)" }}>
@@ -153,7 +170,7 @@ export default function ProfilePage() {
               )}
             </Link>
           ))}
-          {posts.length === 0 && (
+          {allMyPosts.length === 0 && (
             <div className="col-span-2 py-16 flex flex-col items-center gap-2">
               <p className="text-[13px] font-black" style={{ color: "var(--color-sub)" }}>Записей пока нет</p>
               <Link href="/create" className="text-[12px] font-black" style={{ color: "var(--color-orange)" }}>
@@ -165,6 +182,12 @@ export default function ProfilePage() {
       )}
 
       {tab === 1 && (
+        <div className="px-4 py-5">
+          <TravelPassport posts={posts} trips={trips} />
+        </div>
+      )}
+
+      {tab === 2 && (
         <div className="px-4 py-5 flex flex-col gap-3">
           <div className="rounded-[12px] p-4" style={{ background: "var(--color-mint)" }}>
             <p className="text-[10px] font-black tracking-widest uppercase mb-1" style={{ color: "var(--color-label)" }}>Класс</p>
@@ -179,6 +202,7 @@ export default function ProfilePage() {
 
           {user?.email?.toLowerCase() === ADMIN_EMAIL && <CreateStudent />}
 
+          <MoodTrack posts={posts} />
           <Achievements posts={posts} />
           {/* Dark mode toggle */}
           <button onClick={toggleTheme}

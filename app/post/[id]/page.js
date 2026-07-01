@@ -129,6 +129,25 @@ export default function PostPage({ params }) {
         )}
       </div>
 
+      {user?.id === post.author_id && post.status !== "published" && (
+        <div className="mx-4 mb-3 rounded-[12px] p-3.5"
+             style={{
+               background: post.status === "rejected" ? "rgba(198,40,40,0.08)" : "rgba(237,118,21,0.08)",
+               border: `1.5px solid ${post.status === "rejected" ? "rgba(198,40,40,0.25)" : "rgba(237,118,21,0.25)"}`,
+             }}>
+          <p className="text-[12px] font-black mb-1" style={{ color: post.status === "rejected" ? "#c62828" : "var(--color-orange)" }}>
+            {post.status === "rejected" ? "Запись отклонена" : "На проверке у учителя"}
+          </p>
+          {post.status === "rejected" && post.teacher_note ? (
+            <p className="text-[12px]" style={{ color: "var(--color-ink)" }}>{post.teacher_note}</p>
+          ) : post.status === "pending" ? (
+            <p className="text-[12px]" style={{ color: "var(--color-sub)" }}>
+              Как только учитель проверит, запись появится в ленте
+            </p>
+          ) : null}
+        </div>
+      )}
+
       {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}
       {post.media_urls?.length > 0 && (
         <MediaGallery urls={post.media_urls} height={260} onImageClick={setLightbox} />

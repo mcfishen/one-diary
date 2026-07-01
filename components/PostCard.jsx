@@ -71,6 +71,14 @@ export default function PostCard({ post }) {
       )}
 
       <div className="px-3.5 py-3">
+        {post.featured && (
+          <div className="flex items-center gap-1 text-[10px] font-black mb-2" style={{ color: "var(--color-orange)" }}>
+            <svg viewBox="0 0 24 24" fill="var(--color-orange)" className="w-3 h-3">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+            Лучшая запись
+          </div>
+        )}
         {!post.media_urls?.length && post.trip_name && (
           <p className="text-[10px] font-black tracking-wide uppercase mb-2" style={{ color: "var(--color-orange)" }}>
             {post.trip_name}

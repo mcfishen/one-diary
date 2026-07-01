@@ -33,6 +33,8 @@ CREATE TABLE posts (
   author_photo TEXT,
   location     TEXT,
   weather      TEXT,
+  teacher_note TEXT,
+  featured     BOOLEAN DEFAULT false,
   media_urls   TEXT[] DEFAULT '{}',
   heart_count  INT  DEFAULT 0,
   star_count   INT  DEFAULT 0,

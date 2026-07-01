@@ -6,9 +6,7 @@ import { getUser, getTrips, createPost, updatePostMediaUrls } from "@/lib/db";
 import { uploadMedia } from "@/lib/storage";
 import BottomNav from "@/components/BottomNav";
 import PageShapes from "@/components/PageShapes";
-import { WEATHER, PROMPTS } from "@/lib/diary";
-
-const MOODS = ["Восторг", "Интерес", "Радость", "Удивление", "Задумчивость", "Спокойствие"];
+import { WEATHER, PROMPTS, MOOD_META } from "@/lib/diary";
 
 export default function CreatePage() {
   const user = useUser();
@@ -27,6 +25,8 @@ export default function CreatePage() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [uploadError, setUploadError] = useState("");
+  const [autoLoading, setAutoLoading] = useState(false);
+  const [autoError, setAutoError] = useState("");
 
   useEffect(() => {
     if (user === undefined) return;
@@ -51,6 +51,42 @@ export default function CreatePage() {
 
   function addPrompt(p) {
     setText((t) => (t.trim() ? `${t.trim()}\n\n${p} ` : `${p} `));
+  }
+
+  function handleAutoLocate() {
+    setAutoError("");
+    if (!navigator.geolocation) {
+      setAutoError("Геолокация не поддерживается этим браузером.");
+      return;
+    }
+    setAutoLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const res = await fetch("/api/locate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            setAutoError(data.error || "Не удалось определить место и погоду.");
+          } else {
+            if (data.location) setLocation(data.location);
+            if (data.weather) setWeather(data.weather);
+          }
+        } catch {
+          setAutoError("Ошибка сети при определении.");
+        } finally {
+          setAutoLoading(false);
+        }
+      },
+      (err) => {
+        setAutoLoading(false);
+        setAutoError(err.code === 1 ? "Доступ к геолокации запрещён." : "Не удалось получить местоположение.");
+      },
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+    );
   }
 
   async function handleSubmit(e) {
@@ -159,7 +195,22 @@ export default function CreatePage() {
         </div>
 
         <div>
-          <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "var(--color-title)" }}>Место</p>
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-[10px] font-black tracking-widest uppercase" style={{ color: "var(--color-title)" }}>Место</p>
+            <button type="button" onClick={handleAutoLocate} disabled={autoLoading}
+                    className="flex items-center gap-1 text-[10px] font-black rounded-full px-2.5 py-1 disabled:opacity-60"
+                    style={{ background: "rgba(237,118,21,0.08)", color: "var(--color-orange)" }}>
+              {autoLoading ? (
+                <span className="w-3 h-3 border-[1.5px] rounded-full animate-spin"
+                      style={{ borderColor: "var(--color-orange)", borderTopColor: "transparent" }} />
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3 h-3">
+                  <circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+                </svg>
+              )}
+              {autoLoading ? "Определяем..." : "Определить"}
+            </button>
+          </div>
           <div className="relative">
             <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-orange)" strokeWidth={2.5}
                  className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -170,6 +221,7 @@ export default function CreatePage() {
                    className="w-full rounded-[12px] pl-10 pr-3.5 py-3 text-[13px] outline-none"
                    style={{ border: "1.5px solid var(--color-hr)", background: "var(--color-card)", color: "var(--color-ink)" }} />
           </div>
+          {autoError && <p className="text-[10px] mt-1.5 px-1" style={{ color: "#c62828" }}>{autoError}</p>}
         </div>
 
         <div>
@@ -209,15 +261,15 @@ export default function CreatePage() {
         <div>
           <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "var(--color-title)" }}>Настроение</p>
           <div className="flex flex-wrap gap-2">
-            {MOODS.map((m) => (
-              <button key={m} type="button" onClick={() => setMood(m === mood ? "" : m)}
-                      className="text-[11px] font-black rounded-full px-3 py-1.5 transition-colors"
+            {MOOD_META.map((m) => (
+              <button key={m.name} type="button" onClick={() => setMood(m.name === mood ? "" : m.name)}
+                      className="text-[11px] font-black rounded-full px-3 py-1.5 flex items-center gap-1.5 transition-colors"
                       style={{
-                        border: `1.5px solid ${mood === m ? "var(--color-orange)" : "var(--color-hr)"}`,
-                        background: mood === m ? "rgba(237,118,21,0.08)" : "var(--color-card)",
-                        color: mood === m ? "var(--color-orange)" : "var(--color-sub)",
+                        border: `1.5px solid ${mood === m.name ? "var(--color-orange)" : "var(--color-hr)"}`,
+                        background: mood === m.name ? "rgba(237,118,21,0.08)" : "var(--color-card)",
+                        color: mood === m.name ? "var(--color-orange)" : "var(--color-sub)",
                       }}>
-                {m}
+                <span>{m.emoji}</span> {m.name}
               </button>
             ))}
           </div>

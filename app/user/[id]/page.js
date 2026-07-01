@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
-import { getUser, getUserPosts } from "@/lib/db";
+import { getUser, getUserPosts, getTrips } from "@/lib/db";
 import Avatar from "@/components/Avatar";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
@@ -11,6 +11,8 @@ import HeroShapes from "@/components/HeroShapes";
 import PageShapes from "@/components/PageShapes";
 import { mediaUrl, isVideoUrl } from "@/lib/diary";
 import { supabase } from "@/lib/supabase";
+import TravelPassport from "@/components/TravelPassport";
+import MoodTrack from "@/components/MoodTrack";
 
 const ADMIN_EMAIL = "ruslanfom2@gmail.com";
 
@@ -20,6 +22,7 @@ export default function UserProfilePage({ params }) {
   const router = useRouter();
   const [profile, setProfile] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [trips, setTrips] = useState([]);
   const [myProfile, setMyProfile] = useState(null);
   const [tab, setTab] = useState(0);
   const [confirmDel, setConfirmDel] = useState(false);
@@ -56,6 +59,7 @@ export default function UserProfilePage({ params }) {
     if (!id) return;
     getUser(id).then(setProfile);
     getUserPosts(id).then(setPosts);
+    getTrips().then(setTrips);
   }, [id]);
 
   useEffect(() => {
@@ -119,7 +123,7 @@ export default function UserProfilePage({ params }) {
       </div>
 
       <div className="flex" style={{ borderBottom: "1px solid var(--color-hr)" }}>
-        {["Записи", "Достижения"].map((t, i) => (
+        {["Записи", "Паспорт", "Достижения"].map((t, i) => (
           <button key={t} onClick={() => setTab(i)}
                   className="flex-1 py-3 text-[11px] font-black tracking-wide transition-colors"
                   style={{
@@ -175,6 +179,13 @@ export default function UserProfilePage({ params }) {
 
       {tab === 1 && (
         <div className="px-4 py-5">
+          <TravelPassport posts={posts} trips={trips} />
+        </div>
+      )}
+
+      {tab === 2 && (
+        <div className="px-4 py-5 flex flex-col gap-4">
+          <MoodTrack posts={posts} />
           <Achievements posts={posts} />
         </div>
       )}
